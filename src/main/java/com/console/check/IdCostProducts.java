@@ -26,8 +26,8 @@ public final class IdCostProducts {
     public static final double COST_MEAT = 2.45;
     public static final double COST_EGGS = 1.35;
     public static final double COST_CHEESE = 1.95;
-    public static final double COST_BREAD = 0.45;
+    public static final double COST_BREAD = 1.00;
     public static final double COST_FISH = 2.05;
-    public static final double COST_OIL = 0.95;
-    public static final double COST_CHOCOLATE = 1.05;
+    public static final double COST_OIL = 1.05;
+    public static final double COST_CHOCOLATE = 1.10;
 }

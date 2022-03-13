@@ -1,9 +1,12 @@
 package com.console.check;
 
 import com.console.check.products.*;
+import com.console.check.regex.RegexData;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -12,9 +15,8 @@ import java.util.List;
 
 public class CheckRunner {
 
-    public static void printStart(String itemIdQuantity, int numberCard) {
-        System.out.println("java CheckRunner " + itemIdQuantity + " card-" + numberCard);
-        System.out.println();
+    public static void printStart() {
+        System.out.println("Предоставте дисконтную карту:");
     }
 
     public static void printHeader() {
@@ -47,44 +49,38 @@ public class CheckRunner {
 
     }
 
-    public static List<Product> addProducts(String itemIdQuantity) throws WrongIdException {
+    public static List<Product> addProducts() throws WrongIdException, IOException {
         List<Product> products = new ArrayList<>();
-        String[] productsIdQua = itemIdQuantity.split(" ");
-        for (int i = 0; i < productsIdQua.length; i++) {
-            String[] idQua = productsIdQua[i].split("-");
-            int itemId = Integer.parseInt(idQua[0]);
-            int quantity = Integer.parseInt(idQua[1]);
+        String file = "fileCheck/products.txt";
+        String parameters = new String(Files.readAllBytes(Paths.get(file)));
+        List<String> product = RegexData.validation(parameters);
+        for (int i = 0; i < product.size(); i++) {
+            String[] idNameCostQua = product.get(i).split(";");
+            int productId = Integer.parseInt(idNameCostQua[0]);
+            String productName = idNameCostQua[1];
+            double productCost = Double.parseDouble(idNameCostQua[2]);
+            int productQua = Integer.parseInt(idNameCostQua[3]);
 
-            switch (itemId) {
-                case IdCostProducts.ID_APPLE:
-                    products.add(new Apple(quantity, IdCostProducts.NAME_APPLE, IdCostProducts.COST_APPLE));
-                    break;
-                case IdCostProducts.ID_MILK:
-                    products.add(new Milk(quantity, IdCostProducts.NAME_MILK, IdCostProducts.COST_MILK));
-                    break;
-                case IdCostProducts.ID_MEAT:
-                    products.add(new Meat(quantity, IdCostProducts.NAME_MEAT, IdCostProducts.COST_MEAT));
-                    break;
-                case IdCostProducts.ID_EGGS:
-                    products.add(new Eggs(quantity, IdCostProducts.NAME_EGGS, IdCostProducts.COST_EGGS));
-                    break;
-                case IdCostProducts.ID_CHEESE:
-                    products.add(new Cheese(quantity, IdCostProducts.NAME_CHEESE, IdCostProducts.COST_CHEESE));
-                    break;
-                case IdCostProducts.ID_BREAD:
-                    products.add(new Bread(quantity, IdCostProducts.NAME_BREAD, IdCostProducts.COST_BREAD));
-                    break;
-                case IdCostProducts.ID_FISH:
-                    products.add(new Fish(quantity, IdCostProducts.NAME_FISH, IdCostProducts.COST_FISH));
-                    break;
-                case IdCostProducts.ID_OIL:
-                    products.add(new Oil(quantity, IdCostProducts.NAME_OIL, IdCostProducts.COST_OIL));
-                    break;
-                case IdCostProducts.ID_CHOCOLATE:
-                    products.add(new Chocolate(quantity, IdCostProducts.NAME_CHOCOLATE, IdCostProducts.COST_CHOCOLATE));
-                    break;
-                default:
-                    throw new WrongIdException();
+            if (productId == IdCostProducts.ID_APPLE && productName.equals(IdCostProducts.NAME_APPLE) && productCost == IdCostProducts.COST_APPLE){
+                products.add(new Apple(productQua, productName, productCost));
+            } else if (productId == IdCostProducts.ID_MILK && productName.equals(IdCostProducts.NAME_MILK) && productCost == IdCostProducts.COST_MILK){
+                products.add(new Milk(productQua, productName, productCost));
+            } else if (productId == IdCostProducts.ID_MEAT && productName.equals(IdCostProducts.NAME_MEAT) && productCost == IdCostProducts.COST_MEAT){
+                products.add(new Meat(productQua, productName, productCost));
+            } else if (productId == IdCostProducts.ID_EGGS && productName.equals(IdCostProducts.NAME_EGGS) && productCost == IdCostProducts.COST_EGGS){
+                products.add(new Eggs(productQua, productName, productCost));
+            } else if (productId == IdCostProducts.ID_CHEESE && productName.equals(IdCostProducts.NAME_CHEESE) && productCost == IdCostProducts.COST_CHEESE){
+                products.add(new Cheese(productQua, productName, productCost));
+            } else if (productId == IdCostProducts.ID_BREAD && productName.equals(IdCostProducts.NAME_BREAD) && productCost == IdCostProducts.COST_BREAD){
+                products.add(new Bread(productQua, productName, productCost));
+            } else if (productId == IdCostProducts.ID_FISH && productName.equals(IdCostProducts.NAME_FISH) && productCost == IdCostProducts.COST_FISH){
+                products.add(new Fish(productQua, productName, productCost));
+            } else if (productId == IdCostProducts.ID_OIL && productName.equals(IdCostProducts.NAME_OIL) && productCost == IdCostProducts.COST_OIL){
+                products.add(new Oil(productQua, productName, productCost));
+            } else if (productId == IdCostProducts.ID_CHOCOLATE && productName.equals(IdCostProducts.NAME_CHOCOLATE) && productCost == IdCostProducts.COST_CHOCOLATE){
+                products.add(new Chocolate(productQua, productName, productCost));
+            } else {
+                throw new WrongIdException();
             }
         }
         return products;
@@ -242,17 +238,13 @@ public class CheckRunner {
     }
 
     public static void main(String[] args) throws IOException {
-        File file = Path.of("fileCheck", "check.txt").toFile();
+        printStart();
+        File file = Path.of("fileCheck/check.txt").toFile();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
              FileOutputStream outputStream = new FileOutputStream(file)) {
-            /* Ввести id и количество товара. Пример: 1-3 3-5 2-3*/
-            String itemIdQuantity = reader.readLine();
-            /* Ввести номер карты от 1 до 10*/
             int numberCard = Integer.parseInt(reader.readLine());
-
-            printStart(itemIdQuantity, numberCard);
             try {
-                List<Product> products = addProducts(itemIdQuantity);
+                List<Product> products = addProducts();
 
                 printHeader();
                 printFileHeader(outputStream);
