@@ -1,24 +1,16 @@
 package com.console.check;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@AllArgsConstructor
 public class DiscountCard {
     private int number;
     private String bonus;
-
-    public DiscountCard(int number, String bonus) {
-        this.number = number;
-        this.bonus = bonus;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public String getBonus() {
-        return bonus;
-    }
 
     public static List<DiscountCard> addCard(){
         List<DiscountCard> cardList = new ArrayList<>();

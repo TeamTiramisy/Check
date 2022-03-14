@@ -1,6 +1,9 @@
 package com.console.check;
 
-public final class IdCostProducts {
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public class IdCostProducts {
     public static final int ID_APPLE = 1;
     public static final int ID_MILK = 2;
     public static final int ID_MEAT = 3;

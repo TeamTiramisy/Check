@@ -1,6 +1,7 @@
 package com.console.check;
 
 import com.console.check.products.*;
+import lombok.SneakyThrows;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -34,7 +35,8 @@ public class CheckRunner {
 
     }
 
-    public static void printFileHeader(FileOutputStream outputStream) throws IOException {
+    @SneakyThrows
+    public static void printFileHeader(FileOutputStream outputStream) {
         outputStream.write(String.format("%-8s %s %10s\n", " ", "ЧЕК ПРОДАЖИ", " ").getBytes());
         outputStream.write(String.format("%-5s %s %10s\n", " ", "Супермаркет: АЛМИ", " ").getBytes());
         LocalDate date = LocalDate.now();
@@ -105,7 +107,8 @@ public class CheckRunner {
         return total;
     }
 
-    public static void printFileCheck(List<Product> products, FileOutputStream outputStream) throws IOException {
+    @SneakyThrows
+    public static void printFileCheck(List<Product> products, FileOutputStream outputStream) {
         outputStream.write(String.format("%-3s %-10s %5s %7s\n\n", "кол", "наименование", "цена", "итог").getBytes());
         double total = 0;
         for (int i = 0; i < products.size(); i++) {
@@ -180,7 +183,8 @@ public class CheckRunner {
         }
     }
 
-    public static void printFileTotal(double total, int numberCard, List<Product> products, FileOutputStream outputStream) throws IOException {
+    @SneakyThrows
+    public static void printFileTotal(double total, int numberCard, List<Product> products, FileOutputStream outputStream) {
         List<DiscountCard> listCards = DiscountCard.addCard();
         int discProduct = 0;
         double discount = 0;
@@ -241,8 +245,9 @@ public class CheckRunner {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        File file = Path.of("fileCheck", "check.txt").toFile();
+    @SneakyThrows
+    public static void main(String[] args) {
+        File file = Path.of("fileCheck/check.txt").toFile();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
              FileOutputStream outputStream = new FileOutputStream(file)) {
             /* Ввести id и количество товара. Пример: 1-3 3-5 2-3*/
