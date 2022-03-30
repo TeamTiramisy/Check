@@ -1,7 +1,10 @@
 package com.console.check;
 
+import com.console.check.collection.CustomArrayList;
+import com.console.check.collection.CustomList;
 import com.console.check.products.*;
 import com.console.check.regex.RegexData;
+import lombok.SneakyThrows;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -36,7 +39,8 @@ public class CheckRunner {
 
     }
 
-    public static void printFileHeader(FileOutputStream outputStream) throws IOException {
+    @SneakyThrows
+    public static void printFileHeader(FileOutputStream outputStream) {
         outputStream.write(String.format("%-8s %s %10s\n", " ", "ЧЕК ПРОДАЖИ", " ").getBytes());
         outputStream.write(String.format("%-5s %s %10s\n", " ", "Супермаркет: АЛМИ", " ").getBytes());
         LocalDate date = LocalDate.now();
@@ -49,11 +53,12 @@ public class CheckRunner {
 
     }
 
-    public static List<Product> addProducts() throws WrongIdException, IOException {
-        List<Product> products = new ArrayList<>();
+    @SneakyThrows
+    public static CustomList<Product> addProducts() {
+        CustomList<Product> products = new CustomArrayList<>();
         String file = "fileCheck/products.txt";
         String parameters = new String(Files.readAllBytes(Paths.get(file)));
-        List<String> product = RegexData.validation(parameters);
+        CustomList<String> product = RegexData.validation(parameters);
         for (int i = 0; i < product.size(); i++) {
             String[] idNameCostQua = product.get(i).split(";");
             int productId = Integer.parseInt(idNameCostQua[0]);
@@ -62,31 +67,31 @@ public class CheckRunner {
             int productQua = Integer.parseInt(idNameCostQua[3]);
 
             if (productId == IdCostProducts.ID_APPLE && productName.equals(IdCostProducts.NAME_APPLE) && productCost == IdCostProducts.COST_APPLE){
-                products.add(new Apple(productQua, productName, productCost));
+                products.add(new Product(productQua, productName, productCost));
             } else if (productId == IdCostProducts.ID_MILK && productName.equals(IdCostProducts.NAME_MILK) && productCost == IdCostProducts.COST_MILK){
-                products.add(new Milk(productQua, productName, productCost));
+                products.add(new Product(productQua, productName, productCost));
             } else if (productId == IdCostProducts.ID_MEAT && productName.equals(IdCostProducts.NAME_MEAT) && productCost == IdCostProducts.COST_MEAT){
-                products.add(new Meat(productQua, productName, productCost));
+                products.add(new Product(productQua, productName, productCost));
             } else if (productId == IdCostProducts.ID_EGGS && productName.equals(IdCostProducts.NAME_EGGS) && productCost == IdCostProducts.COST_EGGS){
-                products.add(new Eggs(productQua, productName, productCost));
+                products.add(new PromotionsProduct(productQua, productName, productCost));
             } else if (productId == IdCostProducts.ID_CHEESE && productName.equals(IdCostProducts.NAME_CHEESE) && productCost == IdCostProducts.COST_CHEESE){
-                products.add(new Cheese(productQua, productName, productCost));
+                products.add(new PromotionsProduct(productQua, productName, productCost));
             } else if (productId == IdCostProducts.ID_BREAD && productName.equals(IdCostProducts.NAME_BREAD) && productCost == IdCostProducts.COST_BREAD){
-                products.add(new Bread(productQua, productName, productCost));
+                products.add(new PromotionsProduct(productQua, productName, productCost));
             } else if (productId == IdCostProducts.ID_FISH && productName.equals(IdCostProducts.NAME_FISH) && productCost == IdCostProducts.COST_FISH){
-                products.add(new Fish(productQua, productName, productCost));
+                products.add(new PromotionsProduct(productQua, productName, productCost));
             } else if (productId == IdCostProducts.ID_OIL && productName.equals(IdCostProducts.NAME_OIL) && productCost == IdCostProducts.COST_OIL){
-                products.add(new Oil(productQua, productName, productCost));
+                products.add(new PromotionsProduct(productQua, productName, productCost));
             } else if (productId == IdCostProducts.ID_CHOCOLATE && productName.equals(IdCostProducts.NAME_CHOCOLATE) && productCost == IdCostProducts.COST_CHOCOLATE){
-                products.add(new Chocolate(productQua, productName, productCost));
+                products.add(new PromotionsProduct(productQua, productName, productCost));
             } else {
-                throw new WrongIdException();
+                throw new WrongIdException("Неверный id, имя или цена товара");
             }
         }
         return products;
     }
 
-    public static double printCheck(List<Product> products) {
+    public static double printCheck(CustomList<Product> products) {
         System.out.printf("%-3s %-10s %5s %7s", "кол", "наименование", "цена", "итог");
         System.out.println();
         System.out.println();
@@ -101,7 +106,8 @@ public class CheckRunner {
         return total;
     }
 
-    public static void printFileCheck(List<Product> products, FileOutputStream outputStream) throws IOException {
+    @SneakyThrows
+    public static void printFileCheck(CustomList<Product> products, FileOutputStream outputStream) {
         outputStream.write(String.format("%-3s %-10s %5s %7s\n\n", "кол", "наименование", "цена", "итог").getBytes());
         double total = 0;
         for (int i = 0; i < products.size(); i++) {
@@ -112,8 +118,8 @@ public class CheckRunner {
         outputStream.write("==============================\n".getBytes());
     }
 
-    public static void printTotal(double total, int numberCard, List<Product> products) {
-        List<DiscountCard> listCards = DiscountCard.addCard();
+    public static void printTotal(double total, int numberCard, CustomList<Product> products) {
+        CustomList<DiscountCard> listCards = DiscountCard.addCard();
         int discProduct = 0;
         double discount = 0;
         int promoProducts = 0;
@@ -176,8 +182,9 @@ public class CheckRunner {
         }
     }
 
-    public static void printFileTotal(double total, int numberCard, List<Product> products, FileOutputStream outputStream) throws IOException {
-        List<DiscountCard> listCards = DiscountCard.addCard();
+    @SneakyThrows
+    public static void printFileTotal(double total, int numberCard, CustomList<Product> products, FileOutputStream outputStream) {
+        CustomList<DiscountCard> listCards = DiscountCard.addCard();
         int discProduct = 0;
         double discount = 0;
         int promoProducts = 0;
@@ -237,14 +244,15 @@ public class CheckRunner {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    @SneakyThrows
+    public static void main(String[] args) {
         printStart();
         File file = Path.of("fileCheck/check.txt").toFile();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
              FileOutputStream outputStream = new FileOutputStream(file)) {
             int numberCard = Integer.parseInt(reader.readLine());
-            try {
-                List<Product> products = addProducts();
+
+                CustomList<Product> products = addProducts();
 
                 printHeader();
                 printFileHeader(outputStream);
@@ -254,9 +262,6 @@ public class CheckRunner {
 
                 printTotal(total, numberCard, products);
                 printFileTotal(total, numberCard, products, outputStream);
-            } catch (WrongIdException e) {
-                e.printStackTrace();
-            }
         }
     }
 }

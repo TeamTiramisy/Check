@@ -1,7 +1,8 @@
 package com.console.check;
 
-public class WrongIdException extends Exception{
-    public WrongIdException() {
-        System.out.println("Неверный id, имя или цена товара");
+public class WrongIdException extends RuntimeException{
+
+    public WrongIdException(String message) {
+        super(message);
     }
 }
