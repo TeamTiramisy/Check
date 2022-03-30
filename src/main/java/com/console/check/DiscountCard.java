@@ -1,27 +1,21 @@
 package com.console.check;
 
+import com.console.check.collection.CustomArrayList;
+import com.console.check.collection.CustomList;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@AllArgsConstructor
 public class DiscountCard {
     private int number;
     private String bonus;
 
-    public DiscountCard(int number, String bonus) {
-        this.number = number;
-        this.bonus = bonus;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public String getBonus() {
-        return bonus;
-    }
-
-    public static List<DiscountCard> addCard(){
-        List<DiscountCard> cardList = new ArrayList<>();
+    public static CustomList<DiscountCard> addCard(){
+        CustomList<DiscountCard> cardList = new CustomArrayList<>();
         cardList.add(new DiscountCard(1, "SilverCard"));
         cardList.add(new DiscountCard(2, "StandardCard"));
         cardList.add(new DiscountCard(3, "GoldCard"));
