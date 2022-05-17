@@ -12,6 +12,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CheckRunner {
 
@@ -50,39 +53,29 @@ public class CheckRunner {
     }
 
     public static List<Product> addProducts() throws WrongIdException, IOException {
-        List<Product> products = new ArrayList<>();
         String file = "fileCheck/products.txt";
         String parameters = new String(Files.readAllBytes(Paths.get(file)));
-        List<String> product = RegexData.validation(parameters);
-        for (int i = 0; i < product.size(); i++) {
-            String[] idNameCostQua = product.get(i).split(";");
-            int productId = Integer.parseInt(idNameCostQua[0]);
-            String productName = idNameCostQua[1];
-            double productCost = Double.parseDouble(idNameCostQua[2]);
-            int productQua = Integer.parseInt(idNameCostQua[3]);
 
-            if (productId == IdCostProducts.ID_APPLE && productName.equals(IdCostProducts.NAME_APPLE) && productCost == IdCostProducts.COST_APPLE){
-                products.add(new Apple(productQua, productName, productCost));
-            } else if (productId == IdCostProducts.ID_MILK && productName.equals(IdCostProducts.NAME_MILK) && productCost == IdCostProducts.COST_MILK){
-                products.add(new Milk(productQua, productName, productCost));
-            } else if (productId == IdCostProducts.ID_MEAT && productName.equals(IdCostProducts.NAME_MEAT) && productCost == IdCostProducts.COST_MEAT){
-                products.add(new Meat(productQua, productName, productCost));
-            } else if (productId == IdCostProducts.ID_EGGS && productName.equals(IdCostProducts.NAME_EGGS) && productCost == IdCostProducts.COST_EGGS){
-                products.add(new Eggs(productQua, productName, productCost));
-            } else if (productId == IdCostProducts.ID_CHEESE && productName.equals(IdCostProducts.NAME_CHEESE) && productCost == IdCostProducts.COST_CHEESE){
-                products.add(new Cheese(productQua, productName, productCost));
-            } else if (productId == IdCostProducts.ID_BREAD && productName.equals(IdCostProducts.NAME_BREAD) && productCost == IdCostProducts.COST_BREAD){
-                products.add(new Bread(productQua, productName, productCost));
-            } else if (productId == IdCostProducts.ID_FISH && productName.equals(IdCostProducts.NAME_FISH) && productCost == IdCostProducts.COST_FISH){
-                products.add(new Fish(productQua, productName, productCost));
-            } else if (productId == IdCostProducts.ID_OIL && productName.equals(IdCostProducts.NAME_OIL) && productCost == IdCostProducts.COST_OIL){
-                products.add(new Oil(productQua, productName, productCost));
-            } else if (productId == IdCostProducts.ID_CHOCOLATE && productName.equals(IdCostProducts.NAME_CHOCOLATE) && productCost == IdCostProducts.COST_CHOCOLATE){
-                products.add(new Chocolate(productQua, productName, productCost));
-            } else {
-                throw new WrongIdException();
-            }
-        }
+        Stream<Product> productStream = RegexData.validation(parameters).stream()
+                .map(string -> string.split(";"))
+                .filter(product -> Integer.parseInt(product[0]) == IdCostProducts.ID_APPLE && product[1].equals(IdCostProducts.NAME_APPLE) && Double.parseDouble(product[2]) == IdCostProducts.COST_APPLE ||
+                        Integer.parseInt(product[0]) == IdCostProducts.ID_MILK && product[1].equals(IdCostProducts.NAME_MILK) && Double.parseDouble(product[2]) == IdCostProducts.COST_MILK ||
+                        Integer.parseInt(product[0]) == IdCostProducts.ID_MEAT && product[1].equals(IdCostProducts.NAME_MEAT) && Double.parseDouble(product[2]) == IdCostProducts.COST_MEAT )
+                .map(product -> new Product(Integer.parseInt(product[3]), product[1], Double.parseDouble(product[2])));
+
+        Stream<Product> promoProductStream = RegexData.validation(parameters).stream()
+                .map(string -> string.split(";"))
+                .filter(product -> Integer.parseInt(product[0]) == IdCostProducts.ID_EGGS && product[1].equals(IdCostProducts.NAME_EGGS) && Double.parseDouble(product[2]) == IdCostProducts.COST_EGGS ||
+                        Integer.parseInt(product[0]) == IdCostProducts.ID_CHEESE && product[1].equals(IdCostProducts.NAME_CHEESE) && Double.parseDouble(product[2]) == IdCostProducts.COST_CHEESE ||
+                        Integer.parseInt(product[0]) == IdCostProducts.ID_BREAD && product[1].equals(IdCostProducts.NAME_BREAD) && Double.parseDouble(product[2]) == IdCostProducts.COST_BREAD ||
+                        Integer.parseInt(product[0]) == IdCostProducts.ID_FISH && product[1].equals(IdCostProducts.NAME_FISH) && Double.parseDouble(product[2]) == IdCostProducts.COST_FISH ||
+                        Integer.parseInt(product[0]) == IdCostProducts.ID_OIL && product[1].equals(IdCostProducts.NAME_OIL) && Double.parseDouble(product[2]) == IdCostProducts.COST_OIL ||
+                        Integer.parseInt(product[0]) == IdCostProducts.ID_CHOCOLATE && product[1].equals(IdCostProducts.NAME_CHOCOLATE) && Double.parseDouble(product[2]) == IdCostProducts.COST_CHOCOLATE)
+                .map(product -> new PromotionsProduct(Integer.parseInt(product[3]), product[1], Double.parseDouble(product[2])));
+
+        List<Product> products = Stream.concat(productStream, promoProductStream)
+                .collect(Collectors.toList());
+
         return products;
     }
 
@@ -90,57 +83,62 @@ public class CheckRunner {
         System.out.printf("%-3s %-10s %5s %7s", "кол", "наименование", "цена", "итог");
         System.out.println();
         System.out.println();
-        double total = 0;
-        for (int i = 0; i < products.size(); i++) {
-            double price = products.get(i).getQua() * products.get(i).getCost();
-            total += price;
-            System.out.printf("%-3d %-10s %7.2f %7.2f", products.get(i).getQua(), products.get(i).getName(), products.get(i).getCost(), price);
-            System.out.println();
-        }
+
+        Optional<Double> total = products.stream()
+                .peek(product -> System.out.printf("%-3d %-10s %7.2f %7.2f\n", product.getQua(), product.getName(), product.getCost(), product.getQua() * product.getCost()))
+                .map(product -> product.getQua() * product.getCost())
+                .reduce(Double::sum);
+
         System.out.println("==============================");
-        return total;
+        return total.get();
     }
 
     public static void printFileCheck(List<Product> products, FileOutputStream outputStream) throws IOException {
         outputStream.write(String.format("%-3s %-10s %5s %7s\n\n", "кол", "наименование", "цена", "итог").getBytes());
-        double total = 0;
-        for (int i = 0; i < products.size(); i++) {
-            double price = products.get(i).getQua() * products.get(i).getCost();
-            total += price;
-            outputStream.write(String.format("%-3d %-10s %7.2f %7.2f\n", products.get(i).getQua(), products.get(i).getName(), products.get(i).getCost(), price).getBytes());
-        }
+
+        Optional<Double> total = products.stream()
+                .peek(product -> {
+                    try {
+                        outputStream.write(String.format("%-3d %-10s %7.2f %7.2f\n", product.getQua(), product.getName(), product.getCost(), product.getQua() * product.getCost()).getBytes());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                })
+                .map(product -> product.getQua() * product.getCost())
+                .reduce(Double::sum);
+
         outputStream.write("==============================\n".getBytes());
     }
 
     public static void printTotal(double total, int numberCard, List<Product> products) {
-        List<DiscountCard> listCards = DiscountCard.addCard();
         int discProduct = 0;
         double discount = 0;
-        int promoProducts = 0;
         if (numberCard > 0 && numberCard < 11) {
-            for (int i = 0; i < listCards.size(); i++) {
-                if (listCards.get(i).getNumber() == numberCard) {
-                    switch (listCards.get(i).getBonus()) {
-                        case "StandardCard":
-                            discProduct = 3;
-                            discount = 0.03;
-                            break;
-                        case "SilverCard":
-                            discProduct = 5;
-                            discount = 0.05;
-                            break;
-                        case "GoldCard":
-                            discProduct = 7;
-                            discount = 0.07;
-                            break;
-                    }
-                }
+            String bonus = DiscountCard.addCard().stream()
+                    .filter(card -> card.getNumber() == numberCard)
+                    .map(DiscountCard::getBonus)
+                    .findFirst()
+                    .get();
+
+            switch (bonus) {
+                case "StandardCard":
+                    discProduct = 3;
+                    discount = 0.03;
+                    break;
+                case "SilverCard":
+                    discProduct = 5;
+                    discount = 0.05;
+                    break;
+                case "GoldCard":
+                    discProduct = 7;
+                    discount = 0.07;
+                    break;
             }
-            for (int i = 0; i < products.size(); i++) {
-                if (products.get(i) instanceof PromotionsProduct) {
-                    promoProducts++;
-                }
-            }
+
+            long promoProducts = products.stream()
+                    .map(product -> product instanceof PromotionsProduct)
+                    .count();
+
             if (promoProducts > 5) {
                 System.out.printf("%-10s %19.2f", "СУММА", total);
                 System.out.println();
@@ -157,11 +155,10 @@ public class CheckRunner {
             }
 
         } else {
-            for (int i = 0; i < products.size(); i++) {
-                if (products.get(i) instanceof PromotionsProduct) {
-                    promoProducts++;
-                }
-            }
+            long promoProducts = products.stream()
+                    .map(product -> product instanceof PromotionsProduct)
+                    .count();
+
             if (promoProducts > 5) {
                 System.out.printf("%-10s %19.2f", "СУММА", total);
                 System.out.println();
@@ -177,34 +174,34 @@ public class CheckRunner {
     }
 
     public static void printFileTotal(double total, int numberCard, List<Product> products, FileOutputStream outputStream) throws IOException {
-        List<DiscountCard> listCards = DiscountCard.addCard();
         int discProduct = 0;
         double discount = 0;
-        int promoProducts = 0;
         if (numberCard > 0 && numberCard < 11) {
-            for (int i = 0; i < listCards.size(); i++) {
-                if (listCards.get(i).getNumber() == numberCard) {
-                    switch (listCards.get(i).getBonus()) {
-                        case "StandardCard":
-                            discProduct = 3;
-                            discount = 0.03;
-                            break;
-                        case "SilverCard":
-                            discProduct = 5;
-                            discount = 0.05;
-                            break;
-                        case "GoldCard":
-                            discProduct = 7;
-                            discount = 0.07;
-                            break;
-                    }
-                }
+            String bonus = DiscountCard.addCard().stream()
+                    .filter(card -> card.getNumber() == numberCard)
+                    .map(DiscountCard::getBonus)
+                    .findFirst()
+                    .get();
+
+            switch (bonus) {
+                case "StandardCard":
+                    discProduct = 3;
+                    discount = 0.03;
+                    break;
+                case "SilverCard":
+                    discProduct = 5;
+                    discount = 0.05;
+                    break;
+                case "GoldCard":
+                    discProduct = 7;
+                    discount = 0.07;
+                    break;
             }
-            for (int i = 0; i < products.size(); i++) {
-                if (products.get(i) instanceof PromotionsProduct) {
-                    promoProducts++;
-                }
-            }
+
+            long promoProducts = products.stream()
+                    .map(product -> product instanceof PromotionsProduct)
+                    .count();
+
             if (promoProducts > 5) {
                 outputStream.write(String.format("%-10s %19.2f\n", "СУММА", total).getBytes());
                 outputStream.write(("Скидка по карте " + discProduct + "%\n").getBytes());
@@ -219,11 +216,10 @@ public class CheckRunner {
             }
 
         } else {
-            for (int i = 0; i < products.size(); i++) {
-                if (products.get(i) instanceof PromotionsProduct) {
-                    promoProducts++;
-                }
-            }
+            long promoProducts = products.stream()
+                    .map(product -> product instanceof PromotionsProduct)
+                    .count();
+
             if (promoProducts > 5) {
                 outputStream.write(String.format("%-10s %19.2f\n", "СУММА", total).getBytes());
                 outputStream.write("Скидочная карта не предьявлена\n".getBytes());
