@@ -52,7 +52,7 @@ public class CheckRunner {
 
     }
 
-    public static List<Product> addProducts() throws WrongIdException, IOException {
+    public static List<Product> addProducts() throws IOException {
         String file = "fileCheck/products.txt";
         String parameters = new String(Files.readAllBytes(Paths.get(file)));
 
@@ -96,16 +96,14 @@ public class CheckRunner {
     public static void printFileCheck(List<Product> products, FileOutputStream outputStream) throws IOException {
         outputStream.write(String.format("%-3s %-10s %5s %7s\n\n", "кол", "наименование", "цена", "итог").getBytes());
 
-        Optional<Double> total = products.stream()
-                .peek(product -> {
+        products.stream()
+                .forEach(product -> {
                     try {
                         outputStream.write(String.format("%-3d %-10s %7.2f %7.2f\n", product.getQua(), product.getName(), product.getCost(), product.getQua() * product.getCost()).getBytes());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                })
-                .map(product -> product.getQua() * product.getCost())
-                .reduce(Double::sum);
+                });
 
         outputStream.write("==============================\n".getBytes());
     }
@@ -239,7 +237,7 @@ public class CheckRunner {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
              FileOutputStream outputStream = new FileOutputStream(file)) {
             int numberCard = Integer.parseInt(reader.readLine());
-            try {
+
                 List<Product> products = addProducts();
 
                 printHeader();
@@ -250,9 +248,6 @@ public class CheckRunner {
 
                 printTotal(total, numberCard, products);
                 printFileTotal(total, numberCard, products, outputStream);
-            } catch (WrongIdException e) {
-                e.printStackTrace();
-            }
         }
     }
 }
