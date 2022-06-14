@@ -126,6 +126,7 @@ public class CheckRunner {
             printCheck(products, outputStream);
 
             printTotal(numberCard, products, outputStream);
+
         }
     }
 }

@@ -2,6 +2,7 @@ package com.console.check;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DiscountCard {
     private int number;
@@ -34,5 +35,18 @@ public class DiscountCard {
         cardList.add(new DiscountCard(10, "StandardCard"));
 
         return cardList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DiscountCard that = (DiscountCard) o;
+        return number == that.number && Objects.equals(bonus, that.bonus);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(number, bonus);
     }
 }

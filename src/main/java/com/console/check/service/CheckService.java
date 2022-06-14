@@ -83,4 +83,5 @@ public class CheckService {
         sum = (double) Math.round(sum * 100) / 100;
         return sum;
     }
+
 }
