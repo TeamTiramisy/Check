@@ -1,27 +1,27 @@
-package com.console.check;
+package com.console.check.service;
 
-import com.console.check.regex.RegexData;
+
+import com.console.check.entity.DiscountCard;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class DiscountCardTest {
+class DiscountServiceTest {
 
-    private  final DiscountCard card = new DiscountCard(1, "SilverCard");
+    private static final DiscountService discountService = DiscountService.getInstance();
+    private final DiscountCard card = new DiscountCard(1, "SilverCard");
 
     private static List<DiscountCard> cardList = null;
 
     @BeforeAll
     static void init() {
-        cardList = DiscountCard.addCard();
+        cardList = discountService.addCard();
     }
 
     @Test

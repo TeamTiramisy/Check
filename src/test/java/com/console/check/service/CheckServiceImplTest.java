@@ -1,8 +1,6 @@
 package com.console.check.service;
 
-import com.console.check.CheckRunner;
-import com.console.check.WrongIdException;
-import com.console.check.products.Product;
+import com.console.check.entity.Product;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -10,18 +8,18 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
-class CheckServiceTest {
+class CheckServiceImplTest {
 
     private static final Product apple = new Product(3, "Яблоко", 1.65);
     private static final String file = "src/test/resources/productsTest.txt";
     private static List<Product> products = null;
+    private static final CheckServiceImpl checkService = CheckServiceImpl.getInstance();
 
     @BeforeAll()
-    static void init() throws WrongIdException, IOException {
-        products = CheckService.addProducts(file);
+    static void init() throws IOException {
+        products = checkService.addProducts(file);
     }
 
 
@@ -36,35 +34,35 @@ class CheckServiceTest {
 
     @Test
     void sumTest(){
-        double sum = CheckService.sum(products);
+        double sum = checkService.sum(products);
         assertEquals(33.35, sum );
     }
 
     @Test
     void promoProductsTest(){
-        long promoProducts = CheckService.promoProducts(products);
+        long promoProducts = checkService.promoProducts(products);
         assertEquals(6, promoProducts);
     }
 
     @Test
     void getDiscountTest(){
-        int discount = CheckService.getDiscount(6);
+        int discount = checkService.getDiscount(6);
         assertEquals(7, discount);
 
-        int discount2 = CheckService.getDiscount(4);
+        int discount2 = checkService.getDiscount(4);
         assertEquals(5, discount2);
 
-        int discount3 = CheckService.getDiscount(8);
+        int discount3 = checkService.getDiscount(8);
         assertEquals(3, discount3);
 
-        int discount4 = CheckService.getDiscount(11);
+        int discount4 = checkService.getDiscount(11);
         assertEquals(0, discount4);
     }
 
     @Test
     void getTotalTest(){
-        double sum = CheckService.sum(products);
-        double total = CheckService.getTotal(sum, 7, 0.1);
+        double sum = checkService.sum(products);
+        double total = checkService.getTotal(sum, 7, 0.1);
         assertEquals(27.68, total);
     }
 

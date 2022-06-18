@@ -1,0 +1,24 @@
+[20:51:42,702] INFO [com.console.check.service.CheckServiceImpl: 104] метод: addProducts
+[20:51:42,702] INFO [com.console.check.service.CheckServiceImpl: 105] параметры: [class java.lang.String] ["fileCheck/products.txt"]
+[20:51:42,733] INFO [com.console.check.service.CheckServiceImpl: 107] возвращаемое значение: interface java.util.List [{"qua":3,"name":"Яблоко","cost":1.65},{"qua":1,"name":"Молоко","cost":1.15},{"qua":1,"name":"Мясо","cost":2.45},{"qua":10,"name":"Яйца","cost":1.35},{"qua":2,"name":"Сыр","cost":1.95},{"qua":1,"name":"Хлеб","cost":1.0},{"qua":1,"name":"Рыба","cost":2.05},{"qua":1,"name":"Масло","cost":1.05},{"qua":3,"name":"Шоколад","cost":1.1}]
+
+[20:51:42,733] INFO [com.console.check.service.CheckServiceImpl: 104] метод: sum
+[20:51:42,733] INFO [com.console.check.service.CheckServiceImpl: 105] параметры: [interface java.util.List] [[{"qua":3,"name":"Яблоко","cost":1.65},{"qua":1,"name":"Молоко","cost":1.15},{"qua":1,"name":"Мясо","cost":2.45},{"qua":10,"name":"Яйца","cost":1.35},{"qua":2,"name":"Сыр","cost":1.95},{"qua":1,"name":"Хлеб","cost":1.0},{"qua":1,"name":"Рыба","cost":2.05},{"qua":1,"name":"Масло","cost":1.05},{"qua":3,"name":"Шоколад","cost":1.1}]]
+[20:51:42,733] INFO [com.console.check.service.CheckServiceImpl: 107] возвращаемое значение: double 33.35
+
+[20:51:42,748] INFO [com.console.check.service.CheckServiceImpl: 104] метод: sum
+[20:51:42,748] INFO [com.console.check.service.CheckServiceImpl: 105] параметры: [interface java.util.List] [[{"qua":3,"name":"Яблоко","cost":1.65},{"qua":1,"name":"Молоко","cost":1.15},{"qua":1,"name":"Мясо","cost":2.45},{"qua":10,"name":"Яйца","cost":1.35},{"qua":2,"name":"Сыр","cost":1.95},{"qua":1,"name":"Хлеб","cost":1.0},{"qua":1,"name":"Рыба","cost":2.05},{"qua":1,"name":"Масло","cost":1.05},{"qua":3,"name":"Шоколад","cost":1.1}]]
+[20:51:42,748] INFO [com.console.check.service.CheckServiceImpl: 107] возвращаемое значение: double 33.35
+
+[20:51:42,748] INFO [com.console.check.service.CheckServiceImpl: 104] метод: getDiscount
+[20:51:42,748] INFO [com.console.check.service.CheckServiceImpl: 105] параметры: [int] [6]
+[20:51:42,748] INFO [com.console.check.service.CheckServiceImpl: 107] возвращаемое значение: int 7
+
+[20:51:42,748] INFO [com.console.check.service.CheckServiceImpl: 104] метод: promoProducts
+[20:51:42,748] INFO [com.console.check.service.CheckServiceImpl: 105] параметры: [interface java.util.List] [[{"qua":3,"name":"Яблоко","cost":1.65},{"qua":1,"name":"Молоко","cost":1.15},{"qua":1,"name":"Мясо","cost":2.45},{"qua":10,"name":"Яйца","cost":1.35},{"qua":2,"name":"Сыр","cost":1.95},{"qua":1,"name":"Хлеб","cost":1.0},{"qua":1,"name":"Рыба","cost":2.05},{"qua":1,"name":"Масло","cost":1.05},{"qua":3,"name":"Шоколад","cost":1.1}]]
+[20:51:42,748] INFO [com.console.check.service.CheckServiceImpl: 107] возвращаемое значение: long 6
+
+[20:51:42,748] INFO [com.console.check.service.CheckServiceImpl: 104] метод: getTotal
+[20:51:42,764] INFO [com.console.check.service.CheckServiceImpl: 105] параметры: [double, int, double] [33.35,7,0.1]
+[20:51:42,764] INFO [com.console.check.service.CheckServiceImpl: 107] возвращаемое значение: double 27.68
+
