@@ -8,7 +8,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {
-    private int qua;
+
+    private Integer id;
+
+    private Integer qua;
+
     private String name;
-    private double cost;
+
+    private Double cost;
+
+    private Promo promo;
 }

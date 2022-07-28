@@ -1,16 +1,15 @@
 package com.console.check.service;
 
 
-import com.console.check.regex.WrongIdException;
-import com.console.check.entity.DiscountCard;
+import com.console.check.entity.Promo;
+import com.console.check.entity.Card;
 import com.console.check.entity.Product;
-import com.console.check.entity.PromotionsProduct;
 import com.console.check.regex.RegexData;
 import com.google.gson.Gson;
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
 import java.lang.reflect.Proxy;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -25,20 +24,22 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)
-public class CheckServiceImpl implements CheckService {
+public class CheckServiceFile implements CheckService {
 
-    private static final CheckServiceImpl INSTANCE = new CheckServiceImpl();
+    private static final CheckServiceFile INSTANCE = new CheckServiceFile();
     private final DiscountService discountService = DiscountService.getInstance();
 
-    public List<Product> addProducts(String file) throws IOException, WrongIdException {
-        String parameters = new String(Files.readAllBytes(Paths.get(file)));
+    @SneakyThrows
+    public List<Product> addProducts() {
+        String path = "fileCheck/products.txt";
+        String parameters = new String(Files.readAllBytes(Paths.get(path)));
 
         Stream<Product> productStream = RegexData.validation(parameters).stream()
                 .map(string -> string.split(";"))
                 .filter(product -> Integer.parseInt(product[0]) == ID_APPLE && product[1].equals(NAME_APPLE) && Double.parseDouble(product[2]) == COST_APPLE ||
                         Integer.parseInt(product[0]) == ID_MILK && product[1].equals(NAME_MILK) && Double.parseDouble(product[2]) == COST_MILK ||
                         Integer.parseInt(product[0]) == ID_MEAT && product[1].equals(NAME_MEAT) && Double.parseDouble(product[2]) == COST_MEAT)
-                .map(product -> new Product(Integer.parseInt(product[3]), product[1], Double.parseDouble(product[2])));
+                .map(product -> new Product(Integer.parseInt(product[0]), Integer.parseInt(product[3]), product[1], Double.parseDouble(product[2]), Promo.NO));
 
         Stream<Product> promoProductStream = RegexData.validation(parameters).stream()
                 .map(string -> string.split(";"))
@@ -48,7 +49,7 @@ public class CheckServiceImpl implements CheckService {
                         Integer.parseInt(product[0]) == ID_FISH && product[1].equals(NAME_FISH) && Double.parseDouble(product[2]) == COST_FISH ||
                         Integer.parseInt(product[0]) == ID_OIL && product[1].equals(NAME_OIL) && Double.parseDouble(product[2]) == COST_OIL ||
                         Integer.parseInt(product[0]) == ID_CHOCOLATE && product[1].equals(NAME_CHOCOLATE) && Double.parseDouble(product[2]) == COST_CHOCOLATE)
-                .map(product -> new PromotionsProduct(Integer.parseInt(product[3]), product[1], Double.parseDouble(product[2])));
+                .map(product -> new Product(Integer.parseInt(product[0]), Integer.parseInt(product[3]), product[1], Double.parseDouble(product[2]), Promo.YES));
 
         List<Product> products = Stream.concat(productStream, promoProductStream)
                 .collect(Collectors.toList());
@@ -64,20 +65,20 @@ public class CheckServiceImpl implements CheckService {
         return total.orElseThrow();
     }
 
-    public long promoProducts(List<Product> products) {
-        long count = products.stream()
-                .filter(product -> product instanceof PromotionsProduct)
+    public int promoProducts(List<Product> products) {
+        int count = (int) products.stream()
+                .filter(product -> product.getPromo().equals(Promo.YES))
                 .count();
 
         return count;
     }
 
-    public int getDiscount(int numberCard) {
+    public int getDiscount(Integer id) {
         int discount = 0;
 
         String bonus = discountService.addCard().stream()
-                .filter(discountCard -> discountCard.getNumber() == numberCard)
-                .map(DiscountCard::getBonus)
+                .filter(card -> card.getId().equals(id))
+                .map(Card::getBonus)
                 .findFirst()
                 .orElse("");
 
@@ -109,7 +110,7 @@ public class CheckServiceImpl implements CheckService {
                 });
     }
 
-    public static CheckServiceImpl getInstance() {
+    public static CheckServiceFile getInstance() {
         return INSTANCE;
     }
 
