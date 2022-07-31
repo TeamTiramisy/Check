@@ -1,30 +1,55 @@
 package com.console.check.service;
 
+import com.console.check.dto.ProductReadDto;
 import com.console.check.entity.Product;
 import com.console.check.entity.Promo;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class CheckServiceDBTest {
+class CheckServiceTest {
 
-    private static final Product APPLE = new Product(1, 3, "Яблоко", 1.65, Promo.NO);
+    private static final ProductReadDto APPLE = ProductReadDto.builder()
+            .id(1)
+            .qua(3)
+            .name("Apple")
+            .cost(1.65)
+            .promo(Promo.NO)
+            .build();
 
-    private static List<Product> products = null;
-    private static final CheckServiceDB checkService = CheckServiceDB.getInstance();
+    private static final String[] IDS = {"1", "2", "3"};
+
+    private static List<ProductReadDto> products = null;
+    private static final CheckService checkService = CheckService.getInstance();
 
     @BeforeAll()
-    static void init() throws IOException {
+    static void init() {
         products = checkService.addProducts();
     }
 
+
     @Test
-    void addProductsTest() {
+    void findAllById() {
+        List<ProductReadDto> product = checkService.findAllById(IDS);
+
+        assertEquals(3, product.size());
+        assertEquals(APPLE.getId(), product.get(0).getId());
+        assertEquals(APPLE.getQua(), product.get(0).getQua());
+        assertEquals(APPLE.getName(), product.get(0).getName());
+        assertEquals(APPLE.getCost(), product.get(0).getCost());
+        assertEquals(APPLE.getPromo(), product.get(0).getPromo());
+
+        assertTrue(products.contains(APPLE));
+
+    }
+
+    @Test
+    void addProducts() {
+
         assertEquals(9, products.size());
         assertEquals(APPLE.getId(), products.get(0).getId());
         assertEquals(APPLE.getQua(), products.get(0).getQua());
@@ -36,28 +61,34 @@ class CheckServiceDBTest {
     }
 
     @Test
-    void sumTest(){
+    void sum() {
         Double sum = checkService.sum(products);
         assertEquals(33.35, sum );
     }
 
     @Test
-    void promoProductsTest(){
+    void promoProducts() {
         int promoProducts = checkService.promoProducts(products);
         assertEquals(6, promoProducts);
     }
 
     @Test
-    void getDiscountTest(){
+    void getDiscount() {
         int discount = checkService.getDiscount(1);
         assertEquals(7, discount);
 
-        int discount4 = checkService.getDiscount(2);
+        int discount2 = checkService.getDiscount(2);
+        assertEquals(5, discount2);
+
+        int discount3 = checkService.getDiscount(3);
+        assertEquals(3, discount3);
+
+        int discount4 = checkService.getDiscount(9);
         assertEquals(0, discount4);
     }
 
     @Test
-    void getTotalTest(){
+    void getTotal() {
         double sum = checkService.sum(products);
         double total = checkService.getTotal(sum, 7, 0.1);
         assertEquals(27.68, total);
@@ -67,5 +98,4 @@ class CheckServiceDBTest {
     static void delete(){
         products = null;
     }
-
 }

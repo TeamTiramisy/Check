@@ -12,11 +12,11 @@ class ProductDaoTest {
 
     private final ProductDao productDao = ProductDao.getInstance();
 
-    private static final Product APPLE = new Product(1, 3, "Яблоко", 1.65, Promo.NO);
+    private static final Product APPLE = new Product(1, 3, "Apple", 1.65, Promo.NO);
 
     @Test
     void findAll(){
-        List<Product> products = productDao.findAll();
+        List<Product> products = productDao.findAll(20, 0);
 
         assertEquals(9, products.size());
 
