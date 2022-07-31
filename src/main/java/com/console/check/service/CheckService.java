@@ -1,19 +1,107 @@
 package com.console.check.service;
 
-import com.console.check.entity.Product;
+import com.console.check.dao.CardDao;
+import com.console.check.dao.ProductDao;
+import com.console.check.dto.ProductReadDto;
+import com.console.check.entity.Card;
+import com.console.check.entity.Promo;
+import com.console.check.exception.WrongIdException;
+import com.console.check.mapper.ProductReadMapper;
 
+import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public interface CheckService {
 
-    List<Product> addProducts();
+import static com.console.check.util.Constants.*;
+import static lombok.AccessLevel.PRIVATE;
 
-    double sum(List<Product> products);
+@NoArgsConstructor(access = PRIVATE)
+public class CheckService {
 
-    int promoProducts(List<Product> products);
 
-    int getDiscount(Integer id);
 
-    double getTotal(double sum, int discount, double promoDiscount);
+    private static final CheckService INSTANCE = new CheckService();
 
+    private final ProductDao productDao = ProductDao.getInstance();
+    private final CardDao cardDao = CardDao.getInstance();
+
+    private final ProductReadMapper mapper = ProductReadMapper.getInstance();
+
+
+    public List<ProductReadDto> findAllById(String[] ids, String[] qua){
+
+        if (ids.length != qua.length){
+            throw new WrongIdException("Missing id or quantity product");
+        }
+
+        List<ProductReadDto> products = new ArrayList<>();
+
+        for (int i = 0; i < ids.length; i++) {
+            ProductReadDto product = productDao.findById(Integer.valueOf(ids[i]))
+                    .map(mapper::map)
+                    .orElseThrow(() -> new WrongIdException("Invalid id"));
+
+            ProductReadDto productReadDto = mapper.copy(product, Integer.valueOf(qua[i]));
+
+            products.add(productReadDto);
+        }
+        return products;
+    }
+
+
+    public List<ProductReadDto> addProducts(){
+        return productDao.findAll(DEFAULT_SIZE_PAGE, NUMBER_PAGE).stream()
+                .map(mapper::map)
+                .toList();
+    }
+
+
+
+    public double sum(List<ProductReadDto> products) {
+        double total = products.stream()
+                .map(product -> product.getQua() * product.getCost())
+                .reduce(Double::sum).orElseThrow();
+        total = (double) Math.round(total * 100) / 100;
+        return total;
+    }
+
+
+
+    public int promoProducts(List<ProductReadDto> products) {
+        int count = (int) products.stream()
+                .filter(product -> product.getPromo().equals(Promo.YES))
+                .count();
+
+        return count;
+    }
+
+
+
+    public int getDiscount(Integer id) {
+        int discount = DISCOUNT_NOT;
+        Card card = cardDao.findById(id)
+                .orElse(cardDao.findById(ID_NOT_BONUS).get());
+
+        switch (card.getBonus()) {
+            case STANDARD -> discount = DISCOUNT_STANDARD;
+            case SILVER -> discount = DISCOUNT_SILVER;
+            case GOLD -> discount = DISCOUNT_GOLD;
+        }
+
+        return discount;
+    }
+
+
+
+    public double getTotal(double sum, int discount, double promoDiscount) {
+        sum -= sum * (discount / 100.0 + promoDiscount);
+        sum = (double) Math.round(sum * 100) / 100;
+        return sum;
+    }
+
+    public static CheckService getInstance() {
+        return INSTANCE;
+    }
 }

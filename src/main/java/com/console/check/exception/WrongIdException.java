@@ -1,4 +1,4 @@
-package com.console.check.regex;
+package com.console.check.exception;
 
 public class WrongIdException extends RuntimeException{
     public WrongIdException(String message) {
