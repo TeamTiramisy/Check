@@ -1,7 +1,6 @@
 package com.console.check.service;
 
 import com.console.check.dao.ProductDao;
-import com.console.check.dto.CardReadDto;
 import com.console.check.dto.ProductCreateDto;
 import com.console.check.dto.ProductReadDto;
 import com.console.check.entity.Product;
@@ -9,23 +8,22 @@ import com.console.check.entity.Promo;
 import com.console.check.exception.WrongIdException;
 import com.console.check.mapper.ProductCreateMapper;
 import com.console.check.mapper.ProductReadMapper;
-import lombok.NoArgsConstructor;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static com.console.check.util.Constants.DEFAULT_SIZE_PAGE;
 import static com.console.check.util.Constants.NUMBER_PAGE;
-import static lombok.AccessLevel.PRIVATE;
 
-@NoArgsConstructor(access = PRIVATE)
-public class ProductService implements Service<Integer, ProductReadDto, ProductCreateDto> {
+@Service
+@RequiredArgsConstructor
+public class ProductCrudService implements CrudService<Integer, ProductReadDto, ProductCreateDto> {
 
-    private static final ProductService INSTANCE = new ProductService();
-
-
-    private final ProductDao productDao = ProductDao.getInstance();
-    private final ProductReadMapper mapper = ProductReadMapper.getInstance();
-    private final ProductCreateMapper createMapper = ProductCreateMapper.getInstance();
+    private final ProductDao productDao;
+    private final ProductReadMapper mapper;
+    private final ProductCreateMapper createMapper;
 
     public List<ProductReadDto> findAll(String size, String page){
         int pageSize = size != null ? Integer.parseInt(size) : DEFAULT_SIZE_PAGE;
@@ -71,9 +69,5 @@ public class ProductService implements Service<Integer, ProductReadDto, ProductC
     public ProductReadDto save(ProductCreateDto productCreateDto){
         Product product = productDao.save(createMapper.map(productCreateDto));
         return mapper.map(product);
-    }
-
-    public static ProductService getInstance() {
-        return INSTANCE;
     }
 }

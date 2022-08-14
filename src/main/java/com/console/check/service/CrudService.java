@@ -1,10 +1,8 @@
 package com.console.check.service;
 
-import com.console.check.dto.CardReadDto;
-
 import java.util.List;
 
-public interface Service<K, T, V> {
+public interface CrudService<K, T, V> {
 
     List<T> findAll(String size, String page);
 

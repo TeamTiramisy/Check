@@ -2,6 +2,7 @@ package com.console.check.service;
 
 import com.console.check.dto.ProductReadDto;
 
+import com.console.check.service.CheckService;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -16,8 +17,9 @@ import com.itextpdf.layout.element.Table;
 
 import com.itextpdf.layout.properties.TextAlignment;
 
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -25,14 +27,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static com.console.check.util.Constants.*;
-import static lombok.AccessLevel.PRIVATE;
-
-@NoArgsConstructor(access = PRIVATE)
+@Service
+@RequiredArgsConstructor
 public class PrintCheckService {
 
-    private static final PrintCheckService INSTANCE = new PrintCheckService();
-
-    private final CheckService service = CheckService.getInstance();
+    private final CheckService service;
 
 
     @SneakyThrows
@@ -185,10 +184,5 @@ public class PrintCheckService {
     private Cell setTextRight(String text) {
         return new Cell().add(new Paragraph(text)).setBorder(Border.NO_BORDER)
                 .setTextAlignment(TextAlignment.RIGHT).setHeight(CELL_SIZE);
-    }
-
-
-    public static PrintCheckService getInstance() {
-        return INSTANCE;
     }
 }

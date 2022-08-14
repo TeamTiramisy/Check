@@ -1,6 +1,5 @@
 package com.console.check.dto;
 
-import com.console.check.entity.Promo;
 import lombok.Builder;
 import lombok.Value;
 

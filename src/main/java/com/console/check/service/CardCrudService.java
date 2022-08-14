@@ -7,23 +7,23 @@ import com.console.check.entity.Card;
 import com.console.check.exception.WrongIdException;
 import com.console.check.mapper.CardCreateMapper;
 import com.console.check.mapper.CardReadMapper;
-import com.console.check.util.Constants;
-import lombok.NoArgsConstructor;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static com.console.check.util.Constants.DEFAULT_SIZE_PAGE;
 import static com.console.check.util.Constants.NUMBER_PAGE;
-import static lombok.AccessLevel.PRIVATE;
 
-@NoArgsConstructor(access = PRIVATE)
-public class CardService implements Service<Integer, CardReadDto, CardCreateDto> {
 
-    private static final CardService INSTANCE = new CardService();
+@Service
+@RequiredArgsConstructor
+public class CardCrudService implements CrudService<Integer, CardReadDto, CardCreateDto> {
 
-    private final CardDao cardDao = CardDao.getInstance();
-    private final CardReadMapper mapper = CardReadMapper.getInstance();
-    private final CardCreateMapper createMapper = CardCreateMapper.getInstance();
+    private final CardDao cardDao;
+    private final CardReadMapper mapper;
+    private final CardCreateMapper createMapper;
 
     @Override
     public List<CardReadDto> findAll(String size, String page){
@@ -63,9 +63,5 @@ public class CardService implements Service<Integer, CardReadDto, CardCreateDto>
     public CardReadDto save(CardCreateDto cardCreateDto){
         Card card = cardDao.save(createMapper.map(cardCreateDto));
         return mapper.map(card);
-    }
-
-    public static CardService getInstance() {
-        return INSTANCE;
     }
 }

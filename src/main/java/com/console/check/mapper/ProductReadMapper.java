@@ -2,15 +2,12 @@ package com.console.check.mapper;
 
 import com.console.check.dto.ProductReadDto;
 import com.console.check.entity.Product;
-import com.console.check.service.ProductService;
-import lombok.NoArgsConstructor;
 
-import static lombok.AccessLevel.PRIVATE;
+import org.springframework.stereotype.Component;
 
-@NoArgsConstructor(access = PRIVATE)
+
+@Component
 public class ProductReadMapper implements Mapper<Product, ProductReadDto> {
-
-    private static final ProductReadMapper INSTANCE = new ProductReadMapper();
 
     @Override
     public ProductReadDto map(Product object) {
@@ -31,9 +28,5 @@ public class ProductReadMapper implements Mapper<Product, ProductReadDto> {
                 .cost(object.getCost())
                 .promo(object.getPromo())
                 .build();
-    }
-
-    public static ProductReadMapper getInstance() {
-        return INSTANCE;
     }
 }

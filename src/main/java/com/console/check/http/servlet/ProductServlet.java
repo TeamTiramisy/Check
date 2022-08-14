@@ -1,9 +1,10 @@
-package com.console.check.servlet;
+package com.console.check.http.servlet;
 
 
+import com.console.check.config.ApplicationConfiguration;
 import com.console.check.dto.ProductCreateDto;
 import com.console.check.dto.ProductReadDto;
-import com.console.check.service.ProductService;
+import com.console.check.service.ProductCrudService;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
@@ -11,21 +12,24 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-
-@WebServlet("/product")
+@Component
+@RequiredArgsConstructor
 public class ProductServlet extends HttpServlet {
 
-    private final ProductService productService = ProductService.getInstance();
+    private final ProductCrudService productCrudService;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer id = Integer.valueOf(req.getParameter("id"));
 
-        String product = new Gson().toJson(productService.findById(id));
+        String product = new Gson().toJson(productCrudService.findById(id));
 
         try(PrintWriter writer = resp.getWriter()){
             writer.write(product);
@@ -47,7 +51,7 @@ public class ProductServlet extends HttpServlet {
                 .promo(promo)
                 .build();
 
-        ProductReadDto product = productService.save(productCreateDto);
+        ProductReadDto product = productCrudService.save(productCreateDto);
 
         String json = new Gson().toJson(product);
 
@@ -60,7 +64,7 @@ public class ProductServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer id = Integer.valueOf(req.getParameter("id"));
 
-        boolean delete = productService.delete(id);
+        boolean delete = productCrudService.delete(id);
 
         try(PrintWriter writer = resp.getWriter()){
             writer.write(String.valueOf(delete));
@@ -84,6 +88,6 @@ public class ProductServlet extends HttpServlet {
                 .promo(promo)
                 .build();
 
-        productService.update(id, productCreateDto);
+        productCrudService.update(id, productCreateDto);
     }
 }

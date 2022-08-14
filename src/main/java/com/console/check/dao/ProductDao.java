@@ -1,12 +1,12 @@
 package com.console.check.dao;
 
-import com.console.check.entity.Card;
+
 import com.console.check.entity.Product;
 import com.console.check.entity.Promo;
 import com.console.check.util.ConnectionManager;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+
 import lombok.SneakyThrows;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,10 +17,8 @@ import java.util.Optional;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Repository
 public class ProductDao implements Dao<Integer, Product> {
-
-    private static final ProductDao INSTANCE = new ProductDao();
 
     private static final String FIND_ALL = """
             SELECT id, qua, name, cost, promo FROM product 
@@ -138,9 +136,5 @@ public class ProductDao implements Dao<Integer, Product> {
                 resultSet.getDouble("cost"),
                 Promo.valueOf(resultSet.getString("promo"))
         );
-    }
-
-    public static ProductDao getInstance() {
-        return INSTANCE;
     }
 }

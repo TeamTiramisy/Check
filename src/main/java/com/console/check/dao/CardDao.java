@@ -1,11 +1,10 @@
 package com.console.check.dao;
 
 import com.console.check.entity.Card;
-import com.console.check.entity.Product;
 import com.console.check.util.ConnectionManager;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+
 import lombok.SneakyThrows;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,10 +15,8 @@ import java.util.Optional;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Repository
 public class CardDao implements Dao<Integer, Card> {
-
-    private static final CardDao INSTANCE = new CardDao();
 
     private static final String FIND_ALL = """
             SELECT id, bonus FROM card 
@@ -127,10 +124,5 @@ public class CardDao implements Dao<Integer, Card> {
                 resultSet.getInt("id"),
                 resultSet.getString("bonus")
         );
-    }
-
-
-    public static CardDao getInstance() {
-        return INSTANCE;
     }
 }

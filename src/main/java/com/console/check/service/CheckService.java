@@ -8,26 +8,23 @@ import com.console.check.entity.Promo;
 import com.console.check.exception.WrongIdException;
 import com.console.check.mapper.ProductReadMapper;
 
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 import static com.console.check.util.Constants.*;
-import static lombok.AccessLevel.PRIVATE;
 
-@NoArgsConstructor(access = PRIVATE)
+@Service
+@RequiredArgsConstructor
 public class CheckService {
 
+    private final ProductDao productDao;
+    private final CardDao cardDao;
 
-
-    private static final CheckService INSTANCE = new CheckService();
-
-    private final ProductDao productDao = ProductDao.getInstance();
-    private final CardDao cardDao = CardDao.getInstance();
-
-    private final ProductReadMapper mapper = ProductReadMapper.getInstance();
+    private final ProductReadMapper mapper;
 
 
     public List<ProductReadDto> findAllById(String[] ids, String[] qua){
@@ -99,9 +96,5 @@ public class CheckService {
         sum -= sum * (discount / 100.0 + promoDiscount);
         sum = (double) Math.round(sum * 100) / 100;
         return sum;
-    }
-
-    public static CheckService getInstance() {
-        return INSTANCE;
     }
 }

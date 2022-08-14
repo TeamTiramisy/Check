@@ -1,6 +1,5 @@
 package com.console.check.util;
 
-import lombok.Data;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
