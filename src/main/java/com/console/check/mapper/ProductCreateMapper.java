@@ -19,4 +19,22 @@ public class ProductCreateMapper implements Mapper<ProductCreateDto, Product> {
                 .promo(Promo.valueOf(object.getPromo()))
                 .build();
     }
+
+    public Product map(Product product ,ProductCreateDto productCreateDto) {
+
+        if (productCreateDto.getQua() != null){
+            product.setQua(Integer.valueOf(productCreateDto.getQua()));
+        }
+        if (productCreateDto.getName() != null){
+            product.setName(productCreateDto.getName());
+        }
+        if (productCreateDto.getCost() != null){
+            product.setCost(Double.valueOf(productCreateDto.getCost()));
+        }
+        if (productCreateDto.getPromo() != null){
+            product.setPromo(Promo.valueOf(productCreateDto.getPromo()));
+        }
+
+        return product;
+    }
 }

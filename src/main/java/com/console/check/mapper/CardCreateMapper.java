@@ -15,4 +15,13 @@ public class CardCreateMapper implements Mapper<CardCreateDto, Card>{
                 .bonus(object.getBonus())
                 .build();
     }
+
+    public Card map(Card card, CardCreateDto cardCreateDto) {
+
+        if (cardCreateDto.getBonus() != null){
+            card.setBonus(cardCreateDto.getBonus());
+        }
+
+        return card;
+    }
 }

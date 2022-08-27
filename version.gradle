@@ -1,13 +1,16 @@
 ext {
     versions = [
             'springframework': '6.0.0-M1',
+            'springdata': '2.7.2',
             'servlet': '5.0.0',
+            'hibernate': '5.6.10.Final',
             'gson': '2.9.0',
             'slf4j': '1.7.36',
             'postgresql': '42.3.6',
             'itextpdf': '7.2.3',
             'guava': '31.1-jre',
             'liquibase': '4.14.0',
-            'junit': '5.9.0'
+            'junit': '5.9.0',
+            'yml': '1.30'
     ]
 }

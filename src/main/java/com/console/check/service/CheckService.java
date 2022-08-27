@@ -1,15 +1,17 @@
 package com.console.check.service;
 
-import com.console.check.dao.CardDao;
-import com.console.check.dao.ProductDao;
+import com.console.check.repository.CardRepository;
 import com.console.check.dto.ProductReadDto;
 import com.console.check.entity.Card;
 import com.console.check.entity.Promo;
 import com.console.check.exception.WrongIdException;
 import com.console.check.mapper.ProductReadMapper;
 
+import com.console.check.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +21,11 @@ import static com.console.check.util.Constants.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CheckService {
 
-    private final ProductDao productDao;
-    private final CardDao cardDao;
+    private final ProductRepository productRepository;
+    private final CardRepository cardRepository;
 
     private final ProductReadMapper mapper;
 
@@ -36,7 +39,7 @@ public class CheckService {
         List<ProductReadDto> products = new ArrayList<>();
 
         for (int i = 0; i < ids.length; i++) {
-            ProductReadDto product = productDao.findById(Integer.valueOf(ids[i]))
+            ProductReadDto product = productRepository.findById(Integer.valueOf(ids[i]))
                     .map(mapper::map)
                     .orElseThrow(() -> new WrongIdException("Invalid id"));
 
@@ -49,7 +52,7 @@ public class CheckService {
 
 
     public List<ProductReadDto> addProducts(){
-        return productDao.findAll(DEFAULT_SIZE_PAGE, NUMBER_PAGE).stream()
+        return productRepository.findAll().stream()
                 .map(mapper::map)
                 .toList();
     }
@@ -78,8 +81,8 @@ public class CheckService {
 
     public int getDiscount(Integer id) {
         int discount = DISCOUNT_NOT;
-        Card card = cardDao.findById(id)
-                .orElse(cardDao.findById(ID_NOT_BONUS).get());
+        Card card = cardRepository.findById(id)
+                .orElse(cardRepository.findById(ID_NOT_BONUS).orElseThrow());
 
         switch (card.getBonus()) {
             case STANDARD -> discount = DISCOUNT_STANDARD;

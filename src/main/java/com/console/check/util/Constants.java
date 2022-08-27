@@ -7,7 +7,6 @@ public final class Constants {
 
     public static final String CHECK = "CHECK";
     public static final String SUPERMARKET = "Supermarket: ALMI";
-    public static final String EMPTY = " ";
     public static final String TERMINAL = "Terminal 6";
     public static final String NAME = "Ivan Ivanov";
     public static final String AMOUNT = "qua";
@@ -27,6 +26,8 @@ public final class Constants {
     public static final String SILVER = "SilverCard";
     public static final String STANDARD = "StandardCard";
     public static final String GOLD = "GoldCard";
+
+    public static final String SEPARATOR = "\\.";
 
     public static final String PATH_CHECK_PDF = "C:/Users/rusla/IdeaProjects/Check/fileCheck/check.pdf";
 
@@ -53,5 +54,19 @@ public final class Constants {
 
     public static  final Integer PDF_WIDTH = 300;
     public static  final Integer PDF_HEIGHT = 500;
+
+    public static final String URL_KEY = "db.url";
+
+    public static final String USER_KEY = "db.user";
+
+    public static final String PASSWORD_KEY = "db.password";
+
+    public static final String DRIVER_KEY = "db.driver";
+
+    public static final String SHOW_KEY = "hibernate.show";
+
+    public static final String FORMAT_KEY = "hibernate.format";
+
+    public static final String DIALECT_KEY = "hibernate.dialect";
 
 }

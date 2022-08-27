@@ -1,19 +1,15 @@
 package com.console.check.http.servlet;
 
-import com.console.check.config.ApplicationConfiguration;
 import com.console.check.dto.CardCreateDto;
 import com.console.check.dto.CardReadDto;
-import com.console.check.service.CardCrudService;
+import com.console.check.service.CardService;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -23,13 +19,13 @@ import java.io.PrintWriter;
 @RequiredArgsConstructor
 public class CardServlet extends HttpServlet {
 
-    private final CardCrudService cardCrudService;
+    private final CardService cardService;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer id = Integer.valueOf(req.getParameter("id"));
 
-        String card = new Gson().toJson(cardCrudService.findById(id));
+        String card = new Gson().toJson(cardService.findById(id));
 
         try(PrintWriter writer = resp.getWriter()){
             writer.write(card);
@@ -45,7 +41,7 @@ public class CardServlet extends HttpServlet {
                 .bonus(bonus)
                 .build();
 
-        CardReadDto cardReadDto = cardCrudService.save(cardCreateDto);
+        CardReadDto cardReadDto = cardService.save(cardCreateDto);
 
         String json = new Gson().toJson(cardReadDto);
 
@@ -58,7 +54,7 @@ public class CardServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer id = Integer.valueOf(req.getParameter("id"));
 
-        boolean delete = cardCrudService.delete(id);
+        boolean delete = cardService.delete(id);
 
         try(PrintWriter writer = resp.getWriter()){
             writer.write(String.valueOf(delete));
@@ -75,6 +71,6 @@ public class CardServlet extends HttpServlet {
                 .bonus(bonus)
                 .build();
 
-        cardCrudService.update(id, cardCreateDto);
+        cardService.update(id, cardCreateDto);
     }
 }
