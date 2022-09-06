@@ -4,8 +4,6 @@ import com.console.check.dto.CardReadDto;
 import com.console.check.entity.Card;
 import org.springframework.stereotype.Component;
 
-import static lombok.AccessLevel.PRIVATE;
-
 @Component
 public class CardReadMapper implements Mapper<Card, CardReadDto>{
 

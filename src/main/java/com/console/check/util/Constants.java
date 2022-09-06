@@ -22,51 +22,21 @@ public final class Constants {
     public static final String CARD_EMPTY = "Discount card not shown";
     public static final String DATE = "dd/MM/yyyy";
     public static final String TIME = "HH:mm:ss";
-
     public static final String SILVER = "SilverCard";
     public static final String STANDARD = "StandardCard";
     public static final String GOLD = "GoldCard";
 
-    public static final String SEPARATOR = "\\.";
-
-    public static final String PATH_CHECK_PDF = "C:/Users/rusla/IdeaProjects/Check/fileCheck/check.pdf";
-
-    public static final Integer DEFAULT_SIZE_PAGE = 20;
-
-    public static final Integer NUMBER_PAGE = 0;
 
     public static final Integer ID_NOT_BONUS = 4;
-
     public static final Integer DISCOUNT_GOLD = 7;
-
     public static final Integer DISCOUNT_SILVER = 5;
-
     public static final Integer DISCOUNT_STANDARD = 3;
-
     public static final Integer DISCOUNT_NOT = 0;
-
     public static final Float TABLE_WIDTH = 300F;
-
     public static final Double DISCOUNT_PROMO = 0.1;
     public static final Double DISCOUNT_PROMO_NOT = 0.0;
-
     public static  final Integer CELL_SIZE = 16;
-
     public static  final Integer PDF_WIDTH = 300;
     public static  final Integer PDF_HEIGHT = 500;
-
-    public static final String URL_KEY = "db.url";
-
-    public static final String USER_KEY = "db.user";
-
-    public static final String PASSWORD_KEY = "db.password";
-
-    public static final String DRIVER_KEY = "db.driver";
-
-    public static final String SHOW_KEY = "hibernate.show";
-
-    public static final String FORMAT_KEY = "hibernate.format";
-
-    public static final String DIALECT_KEY = "hibernate.dialect";
 
 }

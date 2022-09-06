@@ -1,9 +1,10 @@
 package com.console.check.dto;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 
-@Value
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class ProductCreateDto {
 

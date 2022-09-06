@@ -7,9 +7,8 @@ import com.console.check.entity.Promo;
 import com.console.check.exception.WrongIdException;
 import com.console.check.mapper.ProductReadMapper;
 
-import com.console.check.repository.ProductRepository;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,13 +23,14 @@ import static com.console.check.util.Constants.*;
 @Transactional(readOnly = true)
 public class CheckService {
 
-    private final ProductRepository productRepository;
+    private final ProductService productService;
+
     private final CardRepository cardRepository;
 
     private final ProductReadMapper mapper;
 
 
-    public List<ProductReadDto> findAllById(String[] ids, String[] qua){
+    public List<ProductReadDto> findAllById(Integer[] ids, Integer[] qua){
 
         if (ids.length != qua.length){
             throw new WrongIdException("Missing id or quantity product");
@@ -39,25 +39,14 @@ public class CheckService {
         List<ProductReadDto> products = new ArrayList<>();
 
         for (int i = 0; i < ids.length; i++) {
-            ProductReadDto product = productRepository.findById(Integer.valueOf(ids[i]))
-                    .map(mapper::map)
-                    .orElseThrow(() -> new WrongIdException("Invalid id"));
+            ProductReadDto product = productService.findById(ids[i]);
 
-            ProductReadDto productReadDto = mapper.copy(product, Integer.valueOf(qua[i]));
+            ProductReadDto productReadDto = mapper.copy(product, qua[i]);
 
             products.add(productReadDto);
         }
         return products;
     }
-
-
-    public List<ProductReadDto> addProducts(){
-        return productRepository.findAll().stream()
-                .map(mapper::map)
-                .toList();
-    }
-
-
 
     public double sum(List<ProductReadDto> products) {
         double total = products.stream()
@@ -67,8 +56,6 @@ public class CheckService {
         return total;
     }
 
-
-
     public int promoProducts(List<ProductReadDto> products) {
         int count = (int) products.stream()
                 .filter(product -> product.getPromo().equals(Promo.YES))
@@ -76,8 +63,6 @@ public class CheckService {
 
         return count;
     }
-
-
 
     public int getDiscount(Integer id) {
         int discount = DISCOUNT_NOT;
@@ -92,8 +77,6 @@ public class CheckService {
 
         return discount;
     }
-
-
 
     public double getTotal(double sum, int discount, double promoDiscount) {
         sum -= sum * (discount / 100.0 + promoDiscount);

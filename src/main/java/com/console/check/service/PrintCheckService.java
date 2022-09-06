@@ -1,8 +1,8 @@
 package com.console.check.service;
 
+import com.console.check.dto.CheckDto;
 import com.console.check.dto.ProductReadDto;
 
-import com.console.check.service.CheckService;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
+import java.io.OutputStream;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -33,15 +34,18 @@ public class PrintCheckService {
 
     private final CheckService service;
 
+    private final CheckService checkService;
+
 
     @SneakyThrows
-    public void printCheck(List<ProductReadDto> products, String card) {
-        Integer id = card != null ? Integer.valueOf(card) : ID_NOT_BONUS;
+    public void printCheck(CheckDto checkDto, OutputStream outputStream) {
+        List<ProductReadDto> products = checkService.findAllById(checkDto.getId(), checkDto.getQua());
+        Integer id = checkDto.getCard() != null ? checkDto.getCard() : ID_NOT_BONUS;
         int discount = service.getDiscount(id);
         double sum = service.sum(products);
         int promoProducts = service.promoProducts(products);
 
-        try (PdfWriter writer = new PdfWriter(PATH_CHECK_PDF);
+        try (PdfWriter writer = new PdfWriter(outputStream);
              PdfDocument pdfDoc = new PdfDocument(writer);
              Document document = new Document(pdfDoc)) {
             pdfDoc.setDefaultPageSize(new PageSize(PDF_WIDTH, PDF_HEIGHT));
@@ -169,6 +173,7 @@ public class PrintCheckService {
             }
 
         }
+        outputStream.close();
     }
 
     private Cell setTextLeft(String text) {
